@@ -2,22 +2,26 @@
 pragma solidity 0.8.18;
 
 contract Liquidity {
+  mapping(string tokenSymbol => uint256) liquidityBalances;
+
   struct TokenPair {
-    address inputToken;
-    address outputToken;
+    string inputTokenSymbol;
+    string outputTokenSymbol;
   }
 
-  mapping(address tokenId => uint256) liqudityBalances;
+  event Sync (uint256 reserve0, uint256 reserve1);
 
-  function getLiquidity (string memory tokenId) view public returns (uint256 liqudityAmount) {
-    // uint256 liquidityAmount = liquidityBalances[tokenId];
+  function addLiquidity (TokenPair memory tokenPair, uint256 amount1, uint256 amount2) public {
+    liquidityBalances[tokenPair.inputTokenSymbol] += amount1;
+    liquidityBalances[tokenPair.outputTokenSymbol] += amount2;
 
-    // return liqudityAmount;
-
-    return 10 * 8;
+    emit Sync(
+      liquidityBalances[tokenPair.inputTokenSymbol],
+      liquidityBalances[tokenPair.outputTokenSymbol]
+    );
   }
 
-  function addLiquidity (TokenPair memory tokenPair) public {
-
+  function getTokenLiquidity (string memory tokenId) view public returns (uint256 liqudityAmount) {
+    return liquidityBalances[tokenId];
   }
 }
